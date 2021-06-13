@@ -52,7 +52,7 @@ def get_mds_matching(g):
     solver = pulp.PULP_CBC_CMD()
     result_status = problem.solve(solver)
 
-    res = [True if x[i].value() == 0.0 else False for i in range(n_col)]
+    res = [True if x[i].value() != 0.0 else False for i in range(n_col)]
     driver_node = set(g.nodes()) - set(edge_list[res, 1])
 
     return len(driver_node) ,driver_node, res
