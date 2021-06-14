@@ -7,7 +7,7 @@ def get_mds_matching(g):
     if not nx.is_weighted(g):
         G = nx.DiGraph()
         G.add_weighted_edges_from([(edge[0], edge[1], 1) for edge in g.edges()])
-        g = G
+        g = G.copy()
 
     if len(set(g.nodes())) != g.number_of_nodes():
         mapping = {}
@@ -29,12 +29,12 @@ def get_mds_matching(g):
     conm = np.zeros((g.number_of_nodes(), n_col))
 
     for i in range(g.number_of_nodes()):
-        idx = np.where(edge_list[:,0] == node_list[1])[0]
+        idx = np.where(edge_list[:,0] == node_list[i])[0]
         conp[i, idx] = 1
 
 
     for i in range(g.number_of_nodes()):
-        idx = np.where(edge_list[:,1] == node_list[1])[0]
+        idx = np.where(edge_list[:,1] == node_list[i])[0]
         conm[i, idx] = 1
 
 
@@ -58,12 +58,22 @@ def get_mds_matching(g):
     return len(driver_node) ,driver_node, res
 
     
+def node_classification_controllability(g, get_mds=get_mds_matching):
+    node_class = []
+    mds_original = get_mds(g)[0] 
+    n_node = g.number_of_nodes()
 
+    for v in g.nodes():
+        g_copy = g.copy()
+        g_copy.remove_node(v)
 
+        mds_del = get_mds(g_copy)[0]
 
-    
+        if (mds_original == mds_del):
+            node_class.append("neutral")
+        elif mds_original < mds_del:
+            node_class.append("indispensable")
+        elif mds_original > mds_del:
+            node_class.append("dispensable")
 
-
-
-
-
+    return node_class
