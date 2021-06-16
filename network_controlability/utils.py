@@ -28,6 +28,9 @@ def get_mds_matching(g):
     conp = np.zeros((g.number_of_nodes(), n_col))
     conm = np.zeros((g.number_of_nodes(), n_col))
 
+    # NOTE: np.argwhereの方が適してそう。どっちでも動く。
+    # np.argwhere(edge_list[:,0] == node_list[i]).reshape(1, -1)[0]
+    
     for i in range(g.number_of_nodes()):
         idx = np.where(edge_list[:,0] == node_list[i])[0]
         conp[i, idx] = 1
